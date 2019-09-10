@@ -1,0 +1,14 @@
+{
+  "private": true,
+  "scripts": {
+    "compile": "fable-splitter ./App -o ./dist",
+    "bundle": "rollup ./dist/App.js -f iife --name \"App\" -o ./dist/bundle.js",
+    "build": "npm run compile && npm run bundle"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.1.2",
+    "fable-compiler": "^2.3.23",
+    "fable-splitter": "^2.1.11",
+    "rollup": "^1.21.2"
+  }
+}
