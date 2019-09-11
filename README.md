@@ -31,7 +31,7 @@ let worker (request: IHttpRequest) =
 Worker.initialize worker
 ```
 
-A "worker" is a function of type `IHttpRequest -> Async<IHttpResponse>` which is what `Worker.initialize` expects. However, you could also implement simple synchronous workers of `IHttpRequest -> IHttpResponse` and give them to `Worker.initialize`:
+A "worker" is a function of type `IHttpRequest -> Async<IHttpResponse>` which is what `Worker.initialize` expects. However, you could also implement simple synchronous workers of type `IHttpRequest -> IHttpResponse` and give them to `Worker.initialize`:
 ```fs
 let worker (request: IHttpRequest) =
     match request.method, request.path with
@@ -69,7 +69,7 @@ Then have one npm script to compile the application,  another to bundle it and a
 ```json
 {
     "compile": "fable-splitter ./src -o ./dist",
-    "buncle": "rollup ./dist/App.js -f iife --name App -o ./dist/bundle.js",
+    "bundle": "rollup ./dist/App.js -f iife --name App -o ./dist/bundle.js",
     "build": "npm run compile && npm run bundle"
 }
 ```
@@ -77,11 +77,11 @@ Notice here that the entry file for `rollup` is `./dist/App.js` that is because 
 
 Now `rollup` takes this `App.js` entry file and compiles it into a single file as `./dist/bundle.js` this is where your worker script lives.
 
-> As for the  `--name App` flag of rollup, it is used to give the IIFE a name inside the file and it required but it can be any name you want.
+> As for the  `--name App` flag of rollup, it is used to give the IIFE a name inside the file and it is required but it can be any name you want.
 
 ### Testing the worker live
 
-Copy the contents of the file `./dist/bundle.js`, then go to [https://cloudflareworkers.com](https://cloudflareworkers.com) and paste the code to the left, press `CTRL + S` or click the "Update" button to the code running where the page will show you "Home, sweet home":
+Copy the contents of the file `./dist/bundle.js`, then go to [https://cloudflareworkers.com](https://cloudflareworkers.com) and paste the code to the left, press `CTRL + S` or click the "Update" button to update the code running where the page will show you "Home, sweet home":
 
 ![](assets/home.png)
 
