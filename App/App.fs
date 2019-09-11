@@ -2,15 +2,25 @@
 
 open CloudFlareWorkers
 
-let worker request =
+let worker (request: IHttpRequest) =
     async {
-        match Request.method request, Request.url request with
+        match request.method, request.path with
         | HttpMethod.GET, "/" ->
-            return Response.create(body="Home", status=200)
+            return Response.create(body="Home, sweet home", status=200)
 
         | HttpMethod.POST, "/echo" ->
-            let! body = Request.body request
+            let! body = request.body()
             return Response.create(body=body, status=200)
+
+        | HttpMethod.GET, "/headers" ->
+            let headers =
+                request.headers()
+                |> Map.toList
+                |> List.map (fun (key, value) -> sprintf "(%s, %s)" key value)
+                |> String.concat "; "
+                |> sprintf "[%s]"
+
+            return Response.create(body=headers, status=200)
 
         | otherwise ->
             let body = "{ \"message\": \"Not Found\" }"

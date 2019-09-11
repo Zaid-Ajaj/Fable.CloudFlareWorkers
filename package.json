@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "compile": "fable-splitter ./App -o ./dist",
-    "bundle": "rollup ./dist/App.js -f iife --name \"App\" -o ./dist/bundle.js",
+    "bundle": "rollup ./dist/App.js -f iife --name App -o ./dist/bundle.js",
     "build": "npm run compile && npm run bundle"
   },
   "devDependencies": {

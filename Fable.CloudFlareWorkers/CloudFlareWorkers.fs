@@ -5,6 +5,7 @@ open Fable.Core
 open Fable.Core.JsInterop
 
 type IHttpRequest = interface end
+
 type IHttpResponse = interface end
 
 [<StringEnum; RequireQualifiedAccess>]
@@ -36,8 +37,7 @@ module internal Interop =
     [<Emit("$2[$0] = $1")>]
     let set (key: string) (value: obj) (object: obj) : unit = jsNative
 
-
-/// Contains functions for accessing request properties
+/// Contains functions for working with HTTP requests
 module Request =
     /// Reads the headers of the incoming request
     let headers (request: IHttpRequest) : Map<string, string> =
@@ -52,21 +52,32 @@ module Request =
 
     [<Emit("new URL($0.url).pathname")>]
     /// Returns the URL of the incoming request
-    let url (request: IHttpRequest) : string = jsNative
-
+    let path (request: IHttpRequest) : string = jsNative
     [<Emit("$0.method")>]
     /// Returns the HTTP method of the request
     let method (request: IHttpRequest) : HttpMethod = jsNative
-
-    let urlSegments (request: IHttpRequest) : string list =
-        let url = url request
-        url.Split('/')
+    /// Returns the path of the request as segmented list of strings
+    let pathSegments (request: IHttpRequest) : string list =
+        let segments = path request
+        segments.Split('/')
         |> List.ofArray
         |> List.filter (String.IsNullOrWhiteSpace >> not)
 
-type IResponseProperty = interface end
+[<AutoOpen>]
+module Extensions =
+    type IHttpRequest with
+        member request.headers() : Map<string, string> =
+            Map.ofArray (Interop.headers request)
+        /// Returns the URL of the incoming request
+        member request.path = Request.path request
+        /// Returns the HTTP method of the request
+        member request.method = Request.method request
+        /// Returns the path of the request as segmented list of strings
+        member request.pathSegments = Request.pathSegments request
+        /// Reads the body content of the incoming request
+        member request.body() = Request.body request
 
-/// Utilities for creating HTTP responses
+/// Utilities for working with HTTP responses
 [<CompiledName "ResponseModule">]
 type Response =
     /// Creates a new response object
