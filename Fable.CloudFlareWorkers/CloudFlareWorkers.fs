@@ -150,7 +150,7 @@ module Extensions =
             }
 
 
-[<CompiledName "RequestModule">]
+[<CompiledName "RequestModuleHelpers">]
 type Request =
     static member create (url:string, ?body: string, ?headers: Map<string, string>) : IHttpRequest =
         let options = obj()
@@ -177,7 +177,7 @@ type Request =
         Interop.createResponse(url, options)
 
 /// Utilities for working with HTTP responses
-[<CompiledName "ResponseModule">]
+[<CompiledName "ResponseModuleHelpers">]
 type Response =
     /// Creates a new response object
     static member create (?body:string, ?status:int, ?headers: Map<string, string>, ?statusText:string) : IHttpResponse =
