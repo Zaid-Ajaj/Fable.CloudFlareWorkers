@@ -24,8 +24,14 @@ let worker (request: IHttpRequest) =
 
         | otherwise ->
             let body = "{ \"message\": \"Not Found\" }"
-            let headers = [ "Content-type", "application/json" ]
+            let headers = Map.ofList [ "content-type", "application/json" ]
             return Response.create(body, status=404, headers=headers)
     }
 
-Worker.initialize worker
+let echo (context: IRequestContext) =
+    async {
+        let request = context.request
+        return! context.fetch request
+    }
+
+Worker.initialize echo

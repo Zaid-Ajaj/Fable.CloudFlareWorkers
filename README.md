@@ -24,7 +24,7 @@ let worker (request: IHttpRequest) =
 
         | otherwise ->
             let body = "{ \"message\": \"Not Found\" }"
-            let headers = [ "Content-type", "application/json" ]
+            let headers = Map.ofList [ "Content-type", "application/json" ]
             return Response.create(body, status=404, headers=headers)
     }
 
@@ -45,6 +45,26 @@ let worker (request: IHttpRequest) =
 
 Worker.initialize worker
 ```
+
+### Making internal requests from the worker
+
+CloudFlare workers are able to `fetch` resources using requests and receive responses. In order to send a request with `fetch`, you have to inside a [Request Context](https://developers.cloudflare.com/workers/about/tips/request-context/). Using this library, you can access the request context and thus use `fetch` by using the type `IRequestContext` as your input of the worker where
+```fs
+type IRequestContext =
+    abstract request : IHttpRequest
+    abstract fetch : IHttpRequest -> Async<IHttpResponse>
+```
+Now build your worker where it expects such context:
+```fs
+let echo (context: IRequestContext) =
+    async {
+        let request = context.request
+        return! context.fetch request
+    }
+
+Worker.initialize echo
+```
+As simple as that! Here, `Worker.initialize` is using another overload that has type `IRequestContext -> Async<IHttpResponse>`. You can also create your own requests using the `Request.create` function.
 
 ### Compiling the project
 
@@ -89,3 +109,12 @@ If you change the path in the url to something like `/other` then you get the "N
 
 ![](assets/not-found.png)
 
+### Resources
+
+- [Cloudflare Workers Documentation](https://developers.cloudflare.com/workers/)
+
+- [CloudFlare Workers Tooling](https://developers.cloudflare.com/workers/tooling/)
+
+- [Joerg Beekmann - Cloudflare Workers in FSharp- Part I](https://github.com/jbeeko/cfworker-hello-world)
+
+- [Joerg Beekmann - Cloudflare Workers in FSharp - II](https://github.com/jbeeko/cfworker-web-api)

@@ -2,6 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Authors>Zaid Ajaj</Authors>
+    <PackageTags>fsharp;fable;cloudflare;serverless;workers</PackageTags>
+    <Description>A library for easily writing CloudFlare workers in F# to be used with Fable.</Description>
+    <PackageProjectUrl>https://github.com/Zaid-Ajaj/Fable.CloudFlareWorkers</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/Zaid-Ajaj/Fable.CloudFlareWorkers/blob/master/LICENSE</PackageLicenseUrl>
+    <Version>0.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
