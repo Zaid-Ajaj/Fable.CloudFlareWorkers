@@ -3,6 +3,7 @@
 open System
 open Fable.Core
 open Fable.Core.JsInterop
+open Browser.Types
 
 type IHttpRequest = interface end
 
@@ -20,7 +21,7 @@ type HttpMethod =
 /// Interop utilities used in the library
 module internal Interop =
     [<Emit("Array.from($0.headers.entries())")>]
-    let headers (request: IHttpRequest) : (string * string) [] = jsNative
+    let headers (request: obj) : (string * string) [] = jsNative
 
     [<Emit("addEventListener('fetch', $0)")>]
     let addEventHandler (f: obj -> obj) : unit = jsNative
@@ -36,6 +37,9 @@ module internal Interop =
 
     [<Emit("$2[$0] = $1")>]
     let set (key: string) (value: obj) (object: obj) : unit = jsNative
+
+    [<Emit("new Uint8Array($0)")>]
+    let createUInt8Array (x: obj) : byte[] = jsNative
 
 /// Contains functions for working with HTTP requests
 module Request =
@@ -63,6 +67,8 @@ module Request =
         |> List.ofArray
         |> List.filter (String.IsNullOrWhiteSpace >> not)
 
+
+
 [<AutoOpen>]
 module Extensions =
     type IHttpRequest with
@@ -74,8 +80,54 @@ module Extensions =
         member request.method = Request.method request
         /// Returns the path of the request as segmented list of strings
         member request.pathSegments = Request.pathSegments request
-        /// Reads the body content of the incoming request
+        /// Reads the body content of the incoming request as text
         member request.body() = Request.body request
+        member request.formData() : Async<FormData> =
+            async {
+                let! formData = Async.AwaitPromise(request?formData())
+                return formData
+            }
+
+        member request.blob() : Async<Blob> =
+            async {
+                let! text = Async.AwaitPromise (request?blob())
+                return text
+            }
+
+        member request.rawBody() : Async<byte[]> =
+            async {
+                let! arrayBuffer = Async.AwaitPromise(request?arrayBuffer())
+                return Interop.createUInt8Array arrayBuffer
+            }
+
+    type IHttpResponse with
+        /// Reads the body content of the response as text
+        member response.body() : Async<string> =
+            async {
+                let! text = Async.AwaitPromise (response?text())
+                return text
+            }
+
+        member response.blob() : Async<Blob> =
+            async {
+                let! text = Async.AwaitPromise (response?blob())
+                return text
+            }
+
+        member response.formData() : Async<FormData> =
+            async {
+                let! formData = Async.AwaitPromise(response?formData())
+                return formData
+            }
+
+        member response.headers() : Map<string, string> =
+            Map.ofArray (Interop.headers response)
+
+        member response.rawBody() : Async<byte[]> =
+            async {
+                let! arrayBuffer = Async.AwaitPromise(response?arrayBuffer())
+                return Interop.createUInt8Array arrayBuffer
+            }
 
 /// Utilities for working with HTTP responses
 [<CompiledName "ResponseModule">]
