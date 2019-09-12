@@ -24,7 +24,7 @@ let worker (request: IHttpRequest) =
 
         | otherwise ->
             let body = "{ \"message\": \"Not Found\" }"
-            let headers = Map.ofList [ "Content-type", "application/json" ]
+            let headers = Map.ofList [ "content-type", "application/json" ]
             return Response.create(body, status=404, headers=headers)
     }
 
