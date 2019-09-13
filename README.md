@@ -60,7 +60,7 @@ let echo (context: IRequestContext) =
     async {
         let request = context.request
         let! response = context.fetch request
-        return! response
+        return response
     }
 
 Worker.initialize echo
