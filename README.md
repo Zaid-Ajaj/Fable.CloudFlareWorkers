@@ -59,7 +59,8 @@ Now build your worker where it expects such context:
 let echo (context: IRequestContext) =
     async {
         let request = context.request
-        return! context.fetch request
+        let! response = context.fetch request
+        return! response
     }
 
 Worker.initialize echo
