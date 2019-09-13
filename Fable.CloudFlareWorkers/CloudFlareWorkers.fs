@@ -156,25 +156,25 @@ type Request =
         let options = obj()
         headers |> Option.iter (fun value -> Interop.set "headers" (createObj (Array.ofList !!(Map.toList value))) options)
         body |> Option.iter (fun value -> Interop.set "body" value options)
-        Interop.createResponse(url, options)
+        Interop.createRequest(url, options)
 
     static member create (url:string, ?body: Blob, ?headers: Map<string, string>) : IHttpRequest =
         let options = obj()
         headers |> Option.iter (fun value -> Interop.set "headers" (createObj (Array.ofList !!(Map.toList value))) options)
         body |> Option.iter (fun value -> Interop.set "body" value options)
-        Interop.createResponse(url, options)
+        Interop.createRequest(url, options)
 
     static member create (url:string, ?body: byte[], ?headers: Map<string, string>) : IHttpRequest =
         let options = obj()
         headers |> Option.iter (fun value -> Interop.set "headers" (createObj (Array.ofList !!(Map.toList value))) options)
         body |> Option.iter (fun value -> Interop.set "body" (Interop.createBlobFromBytes value) options)
-        Interop.createResponse(url, options)
+        Interop.createRequest(url, options)
 
     static member create (url:string, ?body: FormData, ?headers: Map<string, string>) : IHttpRequest =
         let options = obj()
         headers |> Option.iter (fun value -> Interop.set "headers" (createObj (Array.ofList !!(Map.toList value))) options)
         body |> Option.iter (fun value -> Interop.set "body" value options)
-        Interop.createResponse(url, options)
+        Interop.createRequest(url, options)
 
 /// Utilities for working with HTTP responses
 [<CompiledName "ResponseModuleHelpers">]

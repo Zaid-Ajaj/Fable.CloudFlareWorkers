@@ -8,7 +8,7 @@
     <Description>A library for easily writing CloudFlare workers in F# to be used with Fable.</Description>
     <PackageProjectUrl>https://github.com/Zaid-Ajaj/Fable.CloudFlareWorkers</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/Zaid-Ajaj/Fable.CloudFlareWorkers/blob/master/LICENSE</PackageLicenseUrl>
-    <Version>0.1.0</Version>
+    <Version>0.2.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
